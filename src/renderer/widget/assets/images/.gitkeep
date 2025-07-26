@@ -1,0 +1,13 @@
+# 이미지 파일들이 위치할 폴더입니다
+
+## 필요한 이미지 파일들:
+- hammy-idle.png (80x80px) - 기본 대기 상태
+- hammy-typing.png (80x80px) - 타이핑 중 상태  
+- hammy-excited.png (80x80px) - 흥분 상태
+- hammy-sleeping.png (80x80px) - 잠자는 상태
+
+## 이미지 요구사항:
+- 크기: 80x80 픽셀
+- 포맷: PNG (투명 배경)
+- 스타일: 귀여운 햄스터 캐릭터
+- 색상: 주황색 계열 (#FF8C42)

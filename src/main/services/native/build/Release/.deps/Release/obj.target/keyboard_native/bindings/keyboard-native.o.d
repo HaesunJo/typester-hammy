@@ -1,0 +1,19 @@
+cmd_Release/obj.target/keyboard_native/bindings/keyboard-native.o := c++ -o Release/obj.target/keyboard_native/bindings/keyboard-native.o ../bindings/keyboard-native.cc '-DNODE_GYP_MODULE_NAME=keyboard_native' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_GLIBCXX_USE_CXX11_ABI=1' '-DELECTRON_ENSURE_CONFIG_GYPI' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DUSING_ELECTRON_CONFIG_GYPI' '-DV8_COMPRESS_POINTERS' '-DV8_COMPRESS_POINTERS_IN_SHARED_CAGE' '-DV8_ENABLE_SANDBOX' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DOPENSSL_NO_PINSHARED' '-DOPENSSL_THREADS' '-DOPENSSL_NO_ASM' '-DNAPI_DISABLE_CPP_EXCEPTIONS' '-DBUILDING_NODE_EXTENSION' -I/Users/johaesun/Library/Caches/node-gyp/25.0.0/include/node -I/Users/johaesun/Library/Caches/node-gyp/25.0.0/src -I/Users/johaesun/Library/Caches/node-gyp/25.0.0/deps/openssl/config -I/Users/johaesun/Library/Caches/node-gyp/25.0.0/deps/openssl/openssl/include -I/Users/johaesun/Library/Caches/node-gyp/25.0.0/deps/uv/include -I/Users/johaesun/Library/Caches/node-gyp/25.0.0/deps/zlib -I/Users/johaesun/Library/Caches/node-gyp/25.0.0/deps/v8/include -I/Users/johaesun/Desktop/practice/AI-proto-kiro/typerster-hammy/node_modules/node-addon-api -I../common -I../platform -I../bindings  -O3 -gdwarf-2 -mmacosx-version-min=10.9 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -std=gnu++17 -stdlib=libc++ -fno-rtti -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/keyboard_native/bindings/keyboard-native.o.d.raw   -c
+Release/obj.target/keyboard_native/bindings/keyboard-native.o: \
+  ../bindings/keyboard-native.cc ../bindings/keyboard-native.h \
+  /Users/johaesun/Library/Caches/node-gyp/25.0.0/include/node/node_api.h \
+  /Users/johaesun/Library/Caches/node-gyp/25.0.0/include/node/js_native_api.h \
+  /Users/johaesun/Library/Caches/node-gyp/25.0.0/include/node/js_native_api_types.h \
+  /Users/johaesun/Library/Caches/node-gyp/25.0.0/include/node/node_api_types.h \
+  ../bindings/../common/keyboard-base.h \
+  ../bindings/../platform/macos/keyboard-macos.h \
+  ../bindings/../platform/macos/../../common/keyboard-base.h
+../bindings/keyboard-native.cc:
+../bindings/keyboard-native.h:
+/Users/johaesun/Library/Caches/node-gyp/25.0.0/include/node/node_api.h:
+/Users/johaesun/Library/Caches/node-gyp/25.0.0/include/node/js_native_api.h:
+/Users/johaesun/Library/Caches/node-gyp/25.0.0/include/node/js_native_api_types.h:
+/Users/johaesun/Library/Caches/node-gyp/25.0.0/include/node/node_api_types.h:
+../bindings/../common/keyboard-base.h:
+../bindings/../platform/macos/keyboard-macos.h:
+../bindings/../platform/macos/../../common/keyboard-base.h:
