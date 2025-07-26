@@ -4,6 +4,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Node.js dependencies
+node_modules/
+*/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
 # Build outputs
 dist/
 build/
@@ -120,3 +127,53 @@ src/renderer/widget/assets/images/*.webp
 # But keep README and .gitkeep files
 !src/renderer/widget/assets/images/README.md
 !src/renderer/widget/assets/images/.gitkeep
+
+# Node.js dependencies
+node_modules/
+
+# Electron build output
+dist/
+build/
+out/
+
+# macOS system files
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# dotenv files
+.env
+.env.*
+
+# VSCode settings
+.vscode/
+
+# Electron cache & packaging artifacts
+*.asar
+*.tgz
+
+# TypeScript output
+*.tsbuildinfo
+
+# OS trash
+.Trashes
+
+# GitHub Desktop specific
+*.orig
+
+# Webpack/Parcel cache
+.cache/
+
+# Coverage directory
+coverage/
+
+# Optional npm global installs
+.npm/
+
+# Custom
+typster-hammy-local-dev/
