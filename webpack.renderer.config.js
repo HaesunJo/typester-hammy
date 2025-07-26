@@ -4,10 +4,13 @@ const webpack = require('webpack');
 
 module.exports = {
   target: 'web',
-  entry: './src/renderer/index.tsx',
+  entry: {
+    main: './src/renderer/index.tsx',
+    widget: './src/renderer/widget/index.tsx'
+  },
   output: {
     path: path.resolve(__dirname, 'dist/renderer'),
-    filename: 'renderer.js',
+    filename: '[name].js',
   },
   devtool: 'source-map',
   resolve: {
@@ -30,12 +33,27 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
+        use: {
+          loader: 'ts-loader',
+          options: {
+            transpileOnly: false,
+            compilerOptions: {
+              skipLibCheck: false
+            }
+          }
+        },
         exclude: /node_modules/,
       },
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'images/[name][ext]'
+        }
       },
     ],
   },
@@ -43,6 +61,12 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/renderer/index.html',
       filename: 'index.html',
+      chunks: ['main']
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/renderer/widget.html',
+      filename: 'widget.html',
+      chunks: ['widget']
     }),
     new webpack.ProvidePlugin({
       global: require.resolve('global/window'),
@@ -55,5 +79,11 @@ module.exports = {
   devServer: {
     port: 3001,
     hot: false,
+    static: {
+      directory: path.join(__dirname, 'dist/renderer'),
+    },
+    devMiddleware: {
+      writeToDisk: true,
+    },
   },
 };

@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { IPCChannels, TypingEvent } from '../shared/types';
 import { KeyboardService, TypingMetadata } from './services/KeyboardService';
 import { dataManager } from './services/database/DataManager';
+import { windowManager } from './windows/WindowManager';
 
 class ElectronApp {
   private mainWindow: BrowserWindow | null = null;
@@ -49,6 +50,9 @@ class ElectronApp {
         this.keyboardService.destroy();
       }
       
+      // 윈도우 관리자 정리
+      windowManager.destroy();
+      
       // 데이터 관리자 종료
       try {
         await dataManager.shutdown();
@@ -59,44 +63,20 @@ class ElectronApp {
   }
 
   private createMainWindow(): void {
-    // Check if preload script exists
-    const preloadPath = path.join(__dirname, 'preload.js');
-    if (!fs.existsSync(preloadPath)) {
-      console.error(`Preload script not found at: ${preloadPath}`);
-      console.log('Available files in dist/main:', fs.readdirSync(__dirname));
-    } else {
-      console.log(`Preload script found at: ${preloadPath}`);
+    // WindowManager를 사용하여 메인 창 생성
+    this.mainWindow = windowManager.createMainWindow();
+    
+    // 위젯 창도 함께 생성
+    this.createWidgetWindow();
+  }
+
+  private async createWidgetWindow(): Promise<void> {
+    try {
+      await windowManager.createWidgetWindow();
+      console.log('Widget window created successfully');
+    } catch (error) {
+      console.error('Failed to create widget window:', error);
     }
-
-    this.mainWindow = new BrowserWindow({
-      width: 1200,
-      height: 800,
-      webPreferences: {
-        nodeIntegration: false,
-        contextIsolation: true,
-        preload: preloadPath,
-      },
-      show: false, // Don't show until ready
-      title: 'Typster Hammy',
-    });
-
-    // Load the renderer
-    if (this.isDev) {
-      this.mainWindow.loadURL('http://localhost:3001');
-      this.mainWindow.webContents.openDevTools();
-    } else {
-      this.mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
-    }
-
-    // Show window when ready
-    this.mainWindow.once('ready-to-show', () => {
-      this.mainWindow?.show();
-    });
-
-    // Handle window closed
-    this.mainWindow.on('closed', () => {
-      this.mainWindow = null;
-    });
   }
 
   private initializeKeyboardService(): void {
@@ -118,9 +98,15 @@ class ElectronApp {
         sessionId: typingEvent.sessionId
       });
       
-      // 렌더러로 타이핑 이벤트 전송 (응답 불필요)
+      // 메인 창과 위젯 창 모두에 타이핑 이벤트 전송
       if (this.mainWindow) {
         this.mainWindow.webContents.send(IPCChannels.TYPING_EVENT, typingEvent);
+      }
+      
+      // 위젯 창에도 타이핑 이벤트 전송
+      const widgetWindow = windowManager.getWidgetWindow();
+      if (widgetWindow && !widgetWindow.isDestroyed()) {
+        widgetWindow.webContents.send(IPCChannels.TYPING_EVENT, typingEvent);
       }
     });
 
@@ -138,6 +124,12 @@ class ElectronApp {
       
       if (this.mainWindow) {
         this.mainWindow.webContents.send(IPCChannels.TYPING_SESSION_END, typingEvent);
+      }
+      
+      // 위젯 창에도 세션 종료 이벤트 전송
+      const widgetWindow = windowManager.getWidgetWindow();
+      if (widgetWindow && !widgetWindow.isDestroyed()) {
+        widgetWindow.webContents.send(IPCChannels.TYPING_SESSION_END, typingEvent);
       }
     });
 
@@ -271,6 +263,77 @@ class ElectronApp {
       try {
         await dataManager.cleanupOldData();
         return { success: true };
+      } catch (error) {
+        return { success: false, error: (error as Error).message };
+      }
+    });
+
+    // 위젯 관련 IPC 핸들러
+    ipcMain.handle('widget:show', async () => {
+      try {
+        windowManager.showWidget();
+        return { success: true };
+      } catch (error) {
+        return { success: false, error: (error as Error).message };
+      }
+    });
+
+    ipcMain.handle('widget:hide', async () => {
+      try {
+        windowManager.hideWidget();
+        return { success: true };
+      } catch (error) {
+        return { success: false, error: (error as Error).message };
+      }
+    });
+
+    ipcMain.handle('widget:toggle', async () => {
+      try {
+        windowManager.toggleWidget();
+        return { success: true, visible: windowManager.isWidgetVisible() };
+      } catch (error) {
+        return { success: false, error: (error as Error).message };
+      }
+    });
+
+    ipcMain.handle('widget:setPosition', async (_, x: number, y: number) => {
+      try {
+        windowManager.setWidgetPosition(x, y);
+        return { success: true };
+      } catch (error) {
+        return { success: false, error: (error as Error).message };
+      }
+    });
+
+    ipcMain.handle('widget:getPosition', async () => {
+      try {
+        const position = windowManager.getWidgetPosition();
+        return { success: true, data: position };
+      } catch (error) {
+        return { success: false, error: (error as Error).message };
+      }
+    });
+
+    ipcMain.handle('widget:savePosition', async (_, x: number, y: number) => {
+      try {
+        await dataManager.setSetting('widget_position_x', x);
+        await dataManager.setSetting('widget_position_y', y);
+        return { success: true };
+      } catch (error) {
+        return { success: false, error: (error as Error).message };
+      }
+    });
+
+    ipcMain.handle('widget:getStatus', async () => {
+      try {
+        return {
+          success: true,
+          data: {
+            isOpen: windowManager.isWidgetWindowOpen(),
+            isVisible: windowManager.isWidgetVisible(),
+            position: windowManager.getWidgetPosition()
+          }
+        };
       } catch (error) {
         return { success: false, error: (error as Error).message };
       }

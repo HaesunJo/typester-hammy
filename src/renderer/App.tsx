@@ -15,12 +15,19 @@ const App: React.FC = () => {
   const [databaseStatus, setDatabaseStatus] = useState<any>(null);
   const [todayStats, setTodayStats] = useState<any>(null);
   const [recentSessions, setRecentSessions] = useState<any[]>([]);
-  const [appSettings, setAppSettings] = useState<any>({});
+  const [appSettings, setAppSettings] = useState<Record<string, any>>({});
+  const [widgetStatus, setWidgetStatus] = useState<any>(null);
 
   useEffect(() => {
     // Test IPC connection on component mount
     testIPCConnection();
-    
+
+    // electronAPI가 사용 가능한지 확인
+    if (!window.electronAPI) {
+      console.error('electronAPI is not available');
+      return;
+    }
+
     // 타이핑 이벤트 리스너 등록
     window.electronAPI.onTypingEvent((event: TypingEvent) => {
       console.log('Typing event:', event);
@@ -39,7 +46,7 @@ const App: React.FC = () => {
 
     // 초기 키보드 상태 확인
     updateKeyboardStatus();
-    
+
     // 데이터베이스 상태 및 데이터 로드
     loadDatabaseData();
   }, []);
@@ -52,7 +59,7 @@ const App: React.FC = () => {
         console.error('window.electronAPI is not available');
         return;
       }
-      
+
       const response = await window.electronAPI.ping();
       if (response === 'pong') {
         setConnectionStatus('IPC 연결 성공!');
@@ -137,7 +144,7 @@ const App: React.FC = () => {
       // 최근 세션 조회
       const sessionsResult = await window.electronAPI.database.getRecentSessions(5);
       if (sessionsResult.success) {
-        setRecentSessions(sessionsResult.data);
+        setRecentSessions(sessionsResult.data || []);
       }
 
       // 앱 설정 조회
@@ -170,7 +177,7 @@ const App: React.FC = () => {
     try {
       const currentValue = appSettings[key];
       const newValue = !currentValue;
-      
+
       const result = await window.electronAPI.database.setSetting(key, newValue);
       if (result.success) {
         setAppSettings(prev => ({ ...prev, [key]: newValue }));
@@ -180,13 +187,61 @@ const App: React.FC = () => {
     }
   };
 
+  // 위젯 제어 함수들
+  const handleToggleWidget = async () => {
+    try {
+      const result = await window.electronAPI.widget.toggle();
+      if (result.success) {
+        console.log('Widget toggled, visible:', result.visible);
+        handleWidgetStatus(); // 상태 업데이트
+      }
+    } catch (error) {
+      console.error('Failed to toggle widget:', error);
+    }
+  };
+
+  const handleShowWidget = async () => {
+    try {
+      const result = await window.electronAPI.widget.show();
+      if (result.success) {
+        console.log('Widget shown');
+        handleWidgetStatus(); // 상태 업데이트
+      }
+    } catch (error) {
+      console.error('Failed to show widget:', error);
+    }
+  };
+
+  const handleHideWidget = async () => {
+    try {
+      const result = await window.electronAPI.widget.hide();
+      if (result.success) {
+        console.log('Widget hidden');
+        handleWidgetStatus(); // 상태 업데이트
+      }
+    } catch (error) {
+      console.error('Failed to hide widget:', error);
+    }
+  };
+
+  const handleWidgetStatus = async () => {
+    try {
+      const result = await window.electronAPI.widget.getStatus();
+      if (result.success) {
+        setWidgetStatus(result.data);
+      }
+    } catch (error) {
+      console.error('Failed to get widget status:', error);
+    }
+  };
+
   return (
     <div className="app">
       <div className="container">
         <div className="header-section">
           <h1>🐹 Typester Hammy</h1>
           <p className="subtitle">당신의 타이핑 동반자</p>
-          
+
           <div className="status-card">
             <h3>연결 상태</h3>
             <p className={`status ${connectionStatus.includes('성공') ? 'success' : 'error'}`}>
@@ -239,7 +294,7 @@ const App: React.FC = () => {
                   상태 확인
                 </button>
               </div>
-              
+
               <div className="status-info">
                 <p><strong>상태:</strong> {keyboardStatus.isActive ? '🟢 활성' : '🔴 비활성'}</p>
                 <p><strong>키 카운트:</strong> {keyboardStatus.keyCount}</p>
@@ -274,7 +329,7 @@ const App: React.FC = () => {
                   오래된 데이터 정리
                 </button>
               </div>
-              
+
               <div className="status-info">
                 <h4>데이터베이스 상태</h4>
                 {databaseStatus ? (
@@ -306,6 +361,37 @@ const App: React.FC = () => {
               </div>
             </div>
 
+            <div className="test-section">
+              <h3>Hammy 위젯 제어</h3>
+              <div className="button-group">
+                <button onClick={handleToggleWidget} className="test-button">
+                  위젯 토글
+                </button>
+                <button onClick={handleShowWidget} className="test-button">
+                  위젯 표시
+                </button>
+                <button onClick={handleHideWidget} className="test-button">
+                  위젯 숨김
+                </button>
+                <button onClick={handleWidgetStatus} className="test-button">
+                  위젯 상태 확인
+                </button>
+              </div>
+
+              <div className="status-info">
+                <h4>위젯 상태</h4>
+                {widgetStatus ? (
+                  <>
+                    <p><strong>열림:</strong> {widgetStatus.isOpen ? '🟢 예' : '🔴 아니오'}</p>
+                    <p><strong>표시:</strong> {widgetStatus.isVisible ? '🟢 예' : '🔴 아니오'}</p>
+                    <p><strong>위치:</strong> {widgetStatus.position ? `(${widgetStatus.position.x}, ${widgetStatus.position.y})` : '없음'}</p>
+                  </>
+                ) : (
+                  <p>위젯 상태 로딩 중...</p>
+                )}
+              </div>
+            </div>
+
             <div className="info-section">
               <h3>프로젝트 정보</h3>
               <ul>
@@ -316,7 +402,8 @@ const App: React.FC = () => {
                 <li>✅ 개발 환경 설정 완료</li>
                 <li>✅ 키보드 후킹 시스템 구현 완료</li>
                 <li>✅ 데이터베이스 시스템 구현 완료</li>
-                <li>🔄 Hammy 위젯 UI 구현 예정</li>
+                <li>✅ Hammy 위젯 UI 구현 완료</li>
+                <li>🔄 애니메이션 시스템 구현 예정</li>
               </ul>
             </div>
           </div>

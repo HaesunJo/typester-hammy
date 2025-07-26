@@ -1,0 +1,316 @@
+/* 위젯 전체 스타일 */
+.hammy-widget {
+    width: 120px;
+    height: 120px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+}
+
+/* 햄스터 캐릭터 공통 스타일 */
+.hammy-character {
+    width: 80px;
+    height: 80px;
+    position: relative;
+    transition: transform 0.2s ease;
+    cursor: grab;
+}
+
+.hammy-character.dragging {
+    cursor: grabbing;
+    transform: scale(1.1);
+}
+
+/* 이미지 기반 캐릭터 */
+.hammy-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+/* 이모지 기반 캐릭터 */
+.hammy-emoji {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hammy-emoji-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hammy-emoji-main {
+    font-size: 48px;
+    line-height: 1;
+    user-select: none;
+    transition: transform 0.2s ease;
+}
+
+.hammy-emoji .hammy-emotion {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+/* CSS 기반 캐릭터 */
+.hammy-css .hammy-body {
+    width: 60px;
+    height: 50px;
+    background: linear-gradient(135deg, #FF8C42, #FF6B1A);
+    border-radius: 50% 50% 40% 40%;
+    position: relative;
+    margin: 0 auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* 귀 */
+.hammy-ears {
+    position: absolute;
+    top: -8px;
+    width: 100%;
+}
+
+.ear-left,
+.ear-right {
+    width: 15px;
+    height: 15px;
+    background: #FF6B1A;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+}
+
+.ear-left {
+    left: 8px;
+}
+
+.ear-right {
+    right: 8px;
+}
+
+/* 얼굴 */
+.hammy-face {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* 눈 */
+.hammy-eyes {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+}
+
+.eye {
+    width: 6px;
+    height: 6px;
+    background: #000;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.eye-normal {
+    background: #000;
+}
+
+.eye-closed {
+    height: 2px;
+    background: #333;
+    border-radius: 2px;
+}
+
+.eye-focused {
+    background: #000;
+    transform: scaleY(0.7);
+}
+
+.eye-sparkle {
+    background: #000;
+    box-shadow: 0 0 4px #FFD700;
+    animation: sparkle 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes sparkle {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.2); }
+}
+
+/* 코 */
+.hammy-nose {
+    position: absolute;
+    top: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 2px;
+    background: #8B4513;
+    border-radius: 50%;
+}
+
+/* 볼 */
+.hammy-cheeks {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+}
+
+.cheek {
+    width: 12px;
+    height: 12px;
+    background: #FFB366;
+    border-radius: 50%;
+    position: absolute;
+    opacity: 0.8;
+}
+
+.cheek-left {
+    left: 5px;
+}
+
+.cheek-right {
+    right: 5px;
+}
+
+/* 감정 아이콘 */
+.hammy-emotion {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 12px;
+    opacity: 0.8;
+    animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-3px); }
+}
+
+/* 상태별 애니메이션 */
+.hammy-idle {
+    animation: gentle-bounce 3s ease-in-out infinite;
+}
+
+.hammy-typing {
+    animation: typing-bounce 0.5s ease-in-out infinite;
+}
+
+.hammy-typing .hammy-body {
+    background: linear-gradient(135deg, #FFB366, #FF8C42);
+}
+
+.hammy-typing .cheek {
+    background: #FFD700;
+    transform: scale(1.2);
+}
+
+.hammy-excited {
+    animation: excited-wiggle 0.3s ease-in-out infinite;
+}
+
+.hammy-excited .hammy-body {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+}
+
+.hammy-excited .cheek {
+    background: #FF69B4;
+    transform: scale(1.3);
+    box-shadow: 0 0 8px #FFD700;
+}
+
+.hammy-sleeping {
+    opacity: 0.7;
+    animation: sleep-sway 4s ease-in-out infinite;
+}
+
+.hammy-sleeping .hammy-body {
+    background: linear-gradient(135deg, #D2691E, #CD853F);
+}
+
+/* 이모지 상태별 애니메이션 */
+.hammy-emoji.hammy-idle .hammy-emoji-main {
+    animation: gentle-bounce 3s ease-in-out infinite;
+}
+
+.hammy-emoji.hammy-typing .hammy-emoji-main {
+    animation: typing-bounce 0.5s ease-in-out infinite;
+}
+
+.hammy-emoji.hammy-excited .hammy-emoji-main {
+    animation: excited-wiggle 0.3s ease-in-out infinite;
+    filter: brightness(1.2);
+}
+
+.hammy-emoji.hammy-sleeping .hammy-emoji-main {
+    opacity: 0.7;
+    animation: sleep-sway 4s ease-in-out infinite;
+}
+
+/* 애니메이션 정의 */
+@keyframes gentle-bounce {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-3px); }
+}
+
+@keyframes typing-bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes excited-wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-3deg); }
+    75% { transform: rotate(3deg); }
+}
+
+@keyframes sleep-sway {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(2deg); }
+}
+
+/* 개발 모드 디버그 정보 */
+.debug-info {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.debug-info div {
+    margin: 1px 0;
+}
+
+/* 호버 효과 */
+.hammy-character:hover:not(.dragging) {
+    transform: scale(1.05);
+}
+
+.hammy-character:active {
+    transform: scale(0.95);
+}
+
+/* 드래그 중일 때 */
+.hammy-character.dragging {
+    transform: scale(1.1);
+    filter: brightness(1.1);
+    z-index: 1000;
+}

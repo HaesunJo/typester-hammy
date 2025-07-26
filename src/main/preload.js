@@ -54,6 +54,17 @@ contextBridge.exposeInMainWorld('electronAPI', {
         cleanupOldData: () => ipcRenderer.invoke('database:cleanupOldData')
     },
     
+    // 위젯 관련 API
+    widget: {
+        show: () => ipcRenderer.invoke('widget:show'),
+        hide: () => ipcRenderer.invoke('widget:hide'),
+        toggle: () => ipcRenderer.invoke('widget:toggle'),
+        setPosition: (x, y) => ipcRenderer.invoke('widget:setPosition', x, y),
+        getPosition: () => ipcRenderer.invoke('widget:getPosition'),
+        savePosition: (x, y) => ipcRenderer.invoke('widget:savePosition', x, y),
+        getStatus: () => ipcRenderer.invoke('widget:getStatus')
+    },
+    
     // Remove listeners
     removeAllListeners: (channel) => {
         ipcRenderer.removeAllListeners(channel);

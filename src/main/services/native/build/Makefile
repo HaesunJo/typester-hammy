@@ -337,7 +337,7 @@ endif
 
 quiet_cmd_regen_makefile = ACTION Regenerating $@
 cmd_regen_makefile = cd $(srcdir); /Users/johaesun/Desktop/practice/AI-proto-kiro/typerster-hammy/node_modules/node-gyp/gyp/gyp_main.py -fmake --ignore-environment "-Dlibrary=shared_library" "-Dvisibility=default" "-Dnode_root_dir=/Users/johaesun/Library/Caches/node-gyp/25.0.0" "-Dnode_gyp_dir=/Users/johaesun/Desktop/practice/AI-proto-kiro/typerster-hammy/node_modules/node-gyp" "-Dnode_lib_file=/Users/johaesun/Library/Caches/node-gyp/25.0.0/<(target_arch)/node.lib" "-Dmodule_root_dir=/Users/johaesun/Desktop/practice/AI-proto-kiro/typerster-hammy/src/main/services/native" "-Dnode_engine=v8" "--depth=." "-Goutput_dir=." "--generator-output=build" -I/Users/johaesun/Desktop/practice/AI-proto-kiro/typerster-hammy/src/main/services/native/build/config.gypi -I/Users/johaesun/Desktop/practice/AI-proto-kiro/typerster-hammy/node_modules/node-gyp/addon.gypi -I/Users/johaesun/Library/Caches/node-gyp/25.0.0/include/node/common.gypi "--toplevel-dir=." binding.gyp
-Makefile: $(srcdir)/build/config.gypi $(srcdir)/../../../../node_modules/node-addon-api/node_api.gyp $(srcdir)/binding.gyp $(srcdir)/../../../../../../../../Library/Caches/node-gyp/25.0.0/include/node/common.gypi $(srcdir)/../../../../node_modules/node-gyp/addon.gypi
+Makefile: $(srcdir)/../../../../node_modules/node-addon-api/node_api.gyp $(srcdir)/../../../../../../../../Library/Caches/node-gyp/25.0.0/include/node/common.gypi $(srcdir)/../../../../node_modules/node-gyp/addon.gypi $(srcdir)/build/config.gypi $(srcdir)/binding.gyp
 	$(call do_cmd,regen_makefile)
 
 # "all" is a concatenation of the "all" targets from all the included

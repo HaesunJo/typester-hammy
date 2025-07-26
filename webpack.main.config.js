@@ -36,6 +36,7 @@ module.exports = [
     },
     externals: {
       electron: 'commonjs electron',
+      sqlite3: 'commonjs sqlite3',
       // Exclude native modules from bundling
       '../build/Release/keyboard_native.node': 'commonjs ../build/Release/keyboard_native.node',
       './build/Release/keyboard_native.node': 'commonjs ./build/Release/keyboard_native.node',
